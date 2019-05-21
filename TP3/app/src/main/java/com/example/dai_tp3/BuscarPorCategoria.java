@@ -8,6 +8,7 @@ import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -32,32 +33,32 @@ public class BuscarPorCategoria extends AppCompatActivity {
 
         Adaptador=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Categorias);
         ListaCategorias = findViewById(R.id.ListaDeCategorias);
-
+        ListaCategorias.setOnItemClickListener(escuchadorParaLista);
 
         tareaAsincronica miTarea = new tareaAsincronica();
         miTarea.execute();
     }
 
-    public void BuscarCategoria (View VistaRecibida){
+    AdapterView.OnItemClickListener escuchadorParaLista = new AdapterView.OnItemClickListener(){
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int posicionSeleccionada, long l){
+            Log.d("SeleccionLista", "Posicion seleccionada: " +posicionSeleccionada);
+            Log.d("SeleccionLista", "Elemento seleccionado: " +ListaCategorias.getItemAtPosition(posicionSeleccionada));
 
-        int PosicionSeleccionada;
-        PosicionSeleccionada= ListaCategorias.getSelectedItemPosition();
+            String CategoriaElegida;
+            CategoriaElegida=ListaCategorias.getItemAtPosition(posicionSeleccionada).toString();
 
-        String CategoriaElegida;
-        CategoriaElegida=(String) ListaCategorias.getItemAtPosition(PosicionSeleccionada);
+            Bundle PaqueteDeDatos;
+            PaqueteDeDatos=new Bundle();
+            PaqueteDeDatos.putString("Categoria", CategoriaElegida);
 
-        Bundle PaqueteDeDatos;
-        PaqueteDeDatos=new Bundle();
-        PaqueteDeDatos.putString("Categoria", CategoriaElegida);
+            Intent ActividadDestino;
+            ActividadDestino= new Intent(BuscarPorCategoria.this, MostrarObjetosPorCategoria.class);
+            ActividadDestino.putExtras(PaqueteDeDatos);
 
-        Intent ActividadDestino;
-        ActividadDestino= new Intent(BuscarPorCategoria.this, MostrarObjetosPorCategoria.class);
-        ActividadDestino.putExtras(PaqueteDeDatos);
-
-        startActivity(ActividadDestino);
-
-
-    }
+            startActivity(ActividadDestino);
+        }
+    };
 
     private class tareaAsincronica extends AsyncTask<Void, Void, Void> {
         @Override
@@ -95,32 +96,36 @@ public class BuscarPorCategoria extends AppCompatActivity {
         JsonReader DatosLeidos = new JsonReader(Datos);
         Log.d("LecturaJSON", "Los datos son:      "+DatosLeidos);
         try{
-            //VER EL ERROR DEL LOG
-            String nombreElementoActual = DatosLeidos.nextName();
-            Log.d("LecturaJSON", "El nombre del elemento actual es: "+nombreElementoActual);
+            DatosLeidos.beginObject();
+            while(DatosLeidos.hasNext()){
+                String nombreElementoActual = DatosLeidos.nextName();
+                Log.d("LecturaJSON", "El nombre del elemento actual es: "+nombreElementoActual);
 
-            if(nombreElementoActual.equals("cantidad_de_categorias")){
-
-            }
-            else{
-                DatosLeidos.beginArray();
-                while(DatosLeidos.hasNext()){
-                    DatosLeidos.beginObject();
-                    while(DatosLeidos.hasNext()){
-                        nombreElementoActual=DatosLeidos.nextName();
-                        if(nombreElementoActual.equals("nombre")){
-                            String valorElementoActual = DatosLeidos.nextString();
-                            Log.d("LecturaJSON", "Valor leido: "+ valorElementoActual);
-                            Categorias.add(valorElementoActual);
-                        }
-                        else{
-                            DatosLeidos.skipValue();
-                        }
-                    }
-                    DatosLeidos.endObject();
+                if(nombreElementoActual.equals("cantidad_de_categorias")){
+                    int cantidadCategorias=DatosLeidos.nextInt();
+                    Log.d("LecturaJSON", "La cantidad de categorias es: " + cantidadCategorias);
                 }
-                DatosLeidos.endArray();
+                else{
+                    DatosLeidos.beginArray();
+                    while(DatosLeidos.hasNext()){
+                        DatosLeidos.beginObject();
+                        while(DatosLeidos.hasNext()){
+                            nombreElementoActual=DatosLeidos.nextName();
+                            if(nombreElementoActual.equals("nombre")){
+                                String valorElementoActual = DatosLeidos.nextString();
+                                Log.d("LecturaJSON", "Valor leido: "+ valorElementoActual);
+                                Categorias.add(valorElementoActual);
+                            }
+                            else{
+                                DatosLeidos.skipValue();
+                            }
+                        }
+                        DatosLeidos.endObject();
+                    }
+                    DatosLeidos.endArray();
+                }
             }
+            DatosLeidos.endObject();
         }
         catch (Exception error){
             Log.d("LecturaJSON", "El error es: " + error.getMessage());
