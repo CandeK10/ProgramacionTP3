@@ -1,9 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".BuscarPorGeolocalizacion">
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:id="@+id/MensajeErrorPunto3"
+        android:text="Ingrese las coordenadas y el radio deseado (solo numeros)"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="x"
+        android:textSize="20dp"
+        android:inputType="numberDecimal"
+        android:id="@+id/CoordenadaX"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="y"
+        android:textSize="20dp"
+        android:inputType="numberDecimal"
+        android:id="@+id/CoordenadaY"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Radio"
+        android:inputType="number"
+        android:textSize="20dp"
+        android:id="@+id/Radio"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Buscar"
+        android:onClick="BuscarPorGeolocalizacion"/>
+
+</LinearLayout>

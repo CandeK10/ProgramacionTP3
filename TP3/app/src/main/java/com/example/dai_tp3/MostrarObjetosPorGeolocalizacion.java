@@ -9,5 +9,9 @@ public class MostrarObjetosPorGeolocalizacion extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mostrar_objetos_por_geolocalizacion);
+
+
     }
+
+
 }
