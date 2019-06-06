@@ -13,7 +13,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Por categoría"
+        android:text="Por categoría o geolocalización"
         android:textSize="20dp"
         android:onClick="BuscarPorCategoria"/>
     <Button
@@ -22,11 +22,5 @@
         android:text="Por nombre"
         android:textSize="20dp"
         android:onClick="BuscarPorNombre"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Por geolocalización"
-        android:textSize="20dp"
-        android:onClick="BuscarPorGeolocalizacion"/>
 
 </LinearLayout>

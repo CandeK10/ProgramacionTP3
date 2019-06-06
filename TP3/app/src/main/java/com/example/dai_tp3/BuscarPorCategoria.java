@@ -10,7 +10,10 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,6 +26,7 @@ public class BuscarPorCategoria extends AppCompatActivity {
     ArrayAdapter<String> Adaptador;
     ListView ListaCategorias;
     ArrayList<String> Categorias;
+    ArrayList<String> NombresNormalizados;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,7 @@ public class BuscarPorCategoria extends AppCompatActivity {
         setContentView(R.layout.activity_buscar_por_categoria);
 
         Categorias = new ArrayList<>();
+        NombresNormalizados = new ArrayList<>();
 
         Adaptador=new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Categorias);
         ListaCategorias = findViewById(R.id.ListaDeCategorias);
@@ -48,15 +53,31 @@ public class BuscarPorCategoria extends AppCompatActivity {
             String CategoriaElegida;
             CategoriaElegida=ListaCategorias.getItemAtPosition(posicionSeleccionada).toString();
 
+            String NombreNormalizado;
+            NombreNormalizado = NombresNormalizados.get(posicionSeleccionada);
+
+            RadioButton PorGeolocalizacion;
+            PorGeolocalizacion = findViewById(R.id.RadioGeolocalizacion);
+
             Bundle PaqueteDeDatos;
             PaqueteDeDatos=new Bundle();
-            PaqueteDeDatos.putString("Categoria", CategoriaElegida);
 
             Intent ActividadDestino;
-            ActividadDestino= new Intent(BuscarPorCategoria.this, MostrarObjetosPorCategoria.class);
-            ActividadDestino.putExtras(PaqueteDeDatos);
+            if(PorGeolocalizacion.isChecked()){
+                PaqueteDeDatos.putString("Categoria", CategoriaElegida);
+                PaqueteDeDatos.putString("NombreNormalizado", NombreNormalizado);
+                ActividadDestino= new Intent(BuscarPorCategoria.this, BuscarPorGeolocalizacion.class);
+                ActividadDestino.putExtras(PaqueteDeDatos);
 
-            startActivity(ActividadDestino);
+                startActivity(ActividadDestino);
+            }
+            else{
+                PaqueteDeDatos.putString("Categoria", CategoriaElegida);
+                ActividadDestino= new Intent(BuscarPorCategoria.this, MostrarObjetosPorCategoria.class);
+                ActividadDestino.putExtras(PaqueteDeDatos);
+
+                startActivity(ActividadDestino);
+            }
         }
     };
 
@@ -111,10 +132,17 @@ public class BuscarPorCategoria extends AppCompatActivity {
                         DatosLeidos.beginObject();
                         while(DatosLeidos.hasNext()){
                             nombreElementoActual=DatosLeidos.nextName();
-                            if(nombreElementoActual.equals("nombre")){
-                                String valorElementoActual = DatosLeidos.nextString();
-                                Log.d("LecturaJSON", "Valor leido: "+ valorElementoActual);
-                                Categorias.add(valorElementoActual);
+                            if(nombreElementoActual.equals("nombre")||nombreElementoActual.equals("nombre_normalizado")){
+                                if(nombreElementoActual.equals("nombre")){
+                                    String valorElementoActual = DatosLeidos.nextString();
+                                    Log.d("LecturaJSON", "Valor leido: "+ valorElementoActual);
+                                    Categorias.add(valorElementoActual);
+                                }
+                                if(nombreElementoActual.equals("nombre_normalizado")){
+                                    String ValorNombreNormalizado = DatosLeidos.nextString();
+                                    Log.d("LecturaJSON", "Nombre Normalizado: "+ValorNombreNormalizado);
+                                    NombresNormalizados.add(ValorNombreNormalizado);
+                                }
                             }
                             else{
                                 DatosLeidos.skipValue();

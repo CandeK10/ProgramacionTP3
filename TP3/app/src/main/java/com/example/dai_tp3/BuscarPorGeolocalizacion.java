@@ -8,11 +8,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class BuscarPorGeolocalizacion extends AppCompatActivity {
-
+    String NombreNormalzado;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buscar_por_geolocalizacion);
+
+        Bundle DatosRecibidos;
+        DatosRecibidos= this.getIntent().getExtras();
+
+        String Categoria;
+        Categoria = DatosRecibidos.getString("Categoria");
+
+        NombreNormalzado = DatosRecibidos.getString("NombreNormalizado");
+
+        TextView CategoriaSeleccionada;
+        CategoriaSeleccionada = findViewById(R.id.CategoriaSeleccionada);
+
+        CategoriaSeleccionada.setText("La categoria elegida es '"+ Categoria + "'");
     }
 
     public void BuscarPorGeolocalizacion(View vistaRecibida){
@@ -42,6 +55,7 @@ public class BuscarPorGeolocalizacion extends AppCompatActivity {
             PaqueteDeDatos.putFloat("CoordenadaX", fCoordenadaX);
             PaqueteDeDatos.putFloat("CoordenadaY", fCoordenadaY);
             PaqueteDeDatos.putInt("Radio", iRadio);
+            PaqueteDeDatos.putString("Categoria", NombreNormalzado);
 
             Intent ActividadDestino;
             ActividadDestino = new Intent(BuscarPorGeolocalizacion.this, MostrarObjetosPorGeolocalizacion.class);

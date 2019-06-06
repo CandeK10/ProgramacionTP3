@@ -25,9 +25,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(ActividadDestino);
     }
 
-    public void BuscarPorGeolocalizacion (View VistaRecibida){
-        Intent ActividadDestino;
-        ActividadDestino = new Intent(MainActivity.this, BuscarPorGeolocalizacion.class);
-        startActivity(ActividadDestino);
-    }
 }
